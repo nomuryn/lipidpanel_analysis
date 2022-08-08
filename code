@@ -1,0 +1,36 @@
+### Kanazawa 21-gene Lipid Panel Analysis pipeline ###
+
+# 1. 24名/panelの、fastqファイル格納用ファイルを作成
+
+  for i in {1489..1512};do export j=`expr ${i} \- 1488`;mkdir ${i}_S${j};done
+
+
+# 2. 前回使用したgatkファイルとExtractファイル2点を、XXXX_S1にコピーする
+
+  #cp /opt/bioinfo/seq/2022.7_AMED_1465-1488/1465_S1/gatk.sh . ### 例
+  #cp /opt/bioinfo/seq/2022.7_AMED_1465-1488/1465_S1/Extract.vep_annotation.* . ### 例
+
+
+# 3. gatk.sh内のIDの数字を修正する(3箇所) #vimが一番早い
+
+
+# 4. gatkファイルを、最初のXXXX_S1以外の23のフォルダにそれぞれコピー
+# 下記コマンドはXXXX_S1のフォルダの場所から打つことを想定
+
+  for i in {1490..1512};do export j=`expr ${i} \- 1488`; cp gatk.sh ../../2022.8_AMED_1489-1512/${i}_S${j}/;done
+
+
+# 5. 同じくExtractファイルを、最初のXXXX_S1以外の23のフォルダにそれぞれコピー
+# 下記コマンドはXXXX_S1のフォルダの場所から打つことを想定
+
+  for i in {1490..1512};do export j=`expr ${i} \- 1488`; cp Extract.vep_annotation* ../../2022.8_AMED_1489-1512/${i}_S${j}/;done
+
+
+
+for i in {1490..1512};do export j=`expr ${i} \- 1488`;cd ../${i}_S${j}/;sed "s/1465_S1/${i}_S${j}/g" gatk.sh > a.sh; mv a.sh gatk.sh;done
+
+for i in {1490..1512};do export j=`expr ${i} \- 1488`;cd ../${i}_S${j}/;sh gatk.sh;done &
+
+
+
+
