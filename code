@@ -5,7 +5,7 @@
   for i in {1489..1512};do export j=`expr ${i} \- 1488`;mkdir ${i}_S${j};done
 
 
-# 2. 前回使用したgatkファイルとExtractファイル2点を、XXXX_S1にコピーする
+# 2. 前回使用したgatkファイル(解析実行コマンドの詰め合わせ)とExtractファイル(変異解析がしやすいようにvcfファイルを並べ替えた XX.list ファイルを生成)2点を、XXXX_S1 (XXXXは毎度のLipidパネル解析の通し番号)にコピーする
 
   #cp /opt/bioinfo/seq/2022.7_AMED_1465-1488/1465_S1/gatk.sh . ### 例
   #cp /opt/bioinfo/seq/2022.7_AMED_1465-1488/1465_S1/Extract.vep_annotation.* . ### 例
@@ -26,11 +26,13 @@
   for i in {1490..1512};do export j=`expr ${i} \- 1488`; cp Extract.vep_annotation* ../../2022.8_AMED_1489-1512/${i}_S${j}/;done
 
 
+# 6. gatk.shファイル内のID (XXXX_S1)を、それぞれ XXXY_S2, XXXZ_S3, ... のようにフォルダと同じIDに一括変更
 
-for i in {1490..1512};do export j=`expr ${i} \- 1488`;cd ../${i}_S${j}/;sed "s/1465_S1/${i}_S${j}/g" gatk.sh > a.sh; mv a.sh gatk.sh;done
-
-for i in {1490..1512};do export j=`expr ${i} \- 1488`;cd ../${i}_S${j}/;sh gatk.sh;done &
-
+  for i in {1490..1512};do export j=`expr ${i} \- 1488`;cd ../${i}_S${j}/;sed "s/1489_S1/${i}_S${j}/g" gatk.sh > a.sh; mv a.sh gatk.sh;done
 
 
+# 7. 24ファイルのgatk.shをrun
+# 通常は、XXXX_S1だけ最初にrunして、gatk.shが問題なく動作することを確認した後、S2以降のrunをすると途中で止まる確率が大きく減ります
+
+  for i in {1490..1512};do export j=`expr ${i} \- 1488`;cd ../${i}_S${j}/;sh gatk.sh;done &
 
